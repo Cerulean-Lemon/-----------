@@ -1,0 +1,171 @@
+/* 초기화 및 기본 설정 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background: #eaeaea;
+  font-family: 'Pretendard', sans-serif;
+}
+
+/* 상단 검정 바 */
+.film-top-bar {
+  width: 100vw;
+  height: 60px;
+  background: #000;
+}
+
+/* 디바이더 (섹션 구분선) */
+.divider {
+  width: 100vw;
+  height: 60px;
+  background: #000;
+}
+
+/* 인트로 영역 */
+.intro-film {
+  display: flex;
+  width: 100vw;
+  height: 650px;
+}
+.film-side {
+  width: 8.333vw; /* 160px / 1920px */
+  background: #000;
+  height: 100%;
+  position: relative;
+}
+.intro-center {
+  width: 83.333vw;
+  max-width: 1600px;
+  background: #f5aa02;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 인트로 텍스트 */
+.intro-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 60px;
+  margin-top: auto;
+  margin-bottom: auto;
+  gap: 1.2vw;
+}
+.intro-text h1 {
+  font-size: 3.5vw;
+  font-weight: 900;
+  line-height: 1.1;
+}
+.intro-text h1 span {
+  font-size: 4.5vw;
+  font-weight: 900;
+}
+.intro-text .desc {
+  font-weight: 700;
+  font-size: 1.2vw;
+}
+.intro-text .info {
+  font-size: 0.9vw;
+  line-height: 1.5;
+}
+
+/* 네비게이션 */
+.intro-nav {
+  background: #000;
+  height: 80px;
+  display: flex;
+  align-items: center;
+}
+.intro-nav ul {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  list-style: none;
+}
+.intro-nav li {
+  color: #f5aa02;
+  font-weight: 700;
+  font-size: 1.2vw;
+}
+
+/* 공통 섹션 */
+.home-section,
+.about-section,
+.skills-section,
+.works-section,
+.contact-section {
+  display: flex;
+  width: 100vw;
+  position: relative;
+  background: #fff;
+}
+
+.home-section,
+.about-section,
+.skills-section,
+.works-section,
+.contact-section {
+  height: 1045px;
+}
+
+/* 중앙 콘텐츠 공통 */
+.home-center,
+.section-center {
+  width: 83.333vw;
+  max-width: 1600px;
+  height: 100%;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.home-content,
+.section-content {
+  text-align: center;
+}
+.home-quote {
+  font-size: 1.8vw;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+.home-tags span {
+  font-size: 1vw;
+  font-weight: 600;
+  margin: 0 12px;
+}
+.section-content {
+  font-size: 3vw;
+  font-weight: bold;
+  color: #111;
+}
+
+/* 공통 필름 구멍 (모든 섹션 공통) */
+.home-section .film-side::before,
+.about-section .film-side::before,
+.skills-section .film-side::before,
+.works-section .film-side::before,
+.contact-section .film-side::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 4.5vh; /* 약 44px 정사각형 */
+  height: 100%;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 12vh,
+    #f1f1f1 12vh,
+    #f1f1f1 16.3vh
+  );
+  border-radius: 0.4vh;
+}
+
+/* 인트로 필름 구멍 숨기기 */
+.intro-film .film-side::before {
+  display: none;
+}
