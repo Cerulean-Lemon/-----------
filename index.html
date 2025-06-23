@@ -1,147 +1,565 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Intro Film Frame</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Film Portfolio Swiper</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <style>
+      html,
+      body {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        background: #111;
+        overflow: hidden;
+      }
+      .swiper {
+        width: 100vw;
+        height: 100vh;
+        background: #111;
+      }
+      .swiper-slide {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        background: #fff;
+        overflow: hidden;
+      }
+      .swiper-slide.intro {
+        background: #f5aa02;
+      }
+      /* ---- 필름 바 ---- */
+      .film-bar {
+        width: 100vw;
+        height: 48px;
+        background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0 32px;
+        box-sizing: border-box;
+        position: absolute;
+        z-index: 10;
+        overflow: hidden;
+        gap: 0; /* gap 대신 margin-right 써도 됨 */
+      }
+      .film-bar.top {
+        top: 0;
+      }
+      .film-bar.bottom {
+        bottom: 0;
+      }
 
-    <!-- 상단 필름 바 추가 -->
-  <div class="film-top-bar"></div>
+      /* ---- 흰색 네모 구멍 ---- */
+      .film-hole {
+        width: 28px;
+        height: 28px;
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 7px;
+        margin-right: 24px;
+        flex-shrink: 0;
+        box-shadow: 0 2px 12px 0 rgba(202, 202, 202, 0.1),
+          0 0 0 1.5px rgba(206, 206, 206, 0.35) inset;
+        border: 1.5px solid rgba(255, 255, 255, 0.28);
+      }
+      .film-hole:last-child {
+        margin-right: 0;
+      }
 
-  <!-- 인트로 필름 프레임 -->
-  <section class="intro-film">
-    <!-- 좌측 필름 기둥 -->
-    <div class="film-side"></div>
+      /* 인트로(첫 슬라이드)에서는 구멍 안 보이게 */
+      .swiper-slide.intro .film-bar .film-hole {
+        display: none;
+      }
 
-    <!-- 중앙 콘텐츠 -->
-    <div class="intro-center">
-      <div class="intro-text">
-        <h1>SMPaK<br><span>413</span></h1>
-        <p class="desc">35mm film for portfolio</p>
-        <p class="info">Design | ©2025 SUNGMIN<br />ISO 0413 | exp. unlimited</p>
+      /* ---- 필름 컨텐츠 ---- */
+      .film-content {
+        position: relative;
+        z-index: 2;
+        text-align: left;
+        color: #111;
+        width: 80vw;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .film-content h1 {
+        font-size: 4vw;
+        font-weight: 900;
+        margin: 0 0 1vw 0;
+        line-height: 1.1;
+      }
+      .film-content h1 span {
+        font-size: 5vw;
+        font-weight: 900;
+        display: block;
+      }
+      .film-content .desc {
+        font-weight: 700;
+        font-size: 1.5vw;
+        margin-bottom: 1vw;
+      }
+      .film-content .info {
+        font-size: 1vw;
+        margin-bottom: 2vw;
+        color: #333;
+        font-weight: 400;
+      }
+      .film-nav {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 80px;
+        background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 11;
+      }
+      .film-nav ul {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        gap: 6vw;
+      }
+      .film-nav li {
+        color: #f5aa02;
+        font-weight: 700;
+        font-size: 1.5vw;
+        cursor: pointer;
+        letter-spacing: 0.03em;
+        transition: color 0.2s;
+      }
+      .film-nav li:hover {
+        color: #fff000;
+        text-shadow: 0 0 6px #fff, 0 0 14px #f5aa02;
+      }
+      .swiper-button-next,
+      .swiper-button-prev,
+      .swiper-pagination {
+        display: none;
+      }
+
+      /* --- Coverflow Swiper 스타일 --- */
+      .works-content .mySwiper {
+        width: 100%;
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 40px 40px 60px 40px; /* (좌우/위아래 모두 넉넉하게) */
+      }
+
+      .works-content .mySwiper .swiper-slide {
+        /* 슬라이드 크기 및 디자인 */
+        width: 320px !important; /* !important로 크기 강제 */
+        height: 400px !important; /* !important로 크기 강제 */
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 6px 32px 0 rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        /* 내부 요소 정렬 */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start; /* 컨텐츠를 위에서부터 정렬 */
+        align-items: center;
+        transition: filter 0.4s;
+        color: #111;
+      }
+
+      /* 양옆 비활성 슬라이드 효과 */
+      .works-content .mySwiper .swiper-slide:not(.swiper-slide-active) {
+        filter: grayscale(60%) brightness(0.93) blur(1px) opacity(0.68);
+        box-shadow: none;
+      }
+
+      /* 슬라이드 내부 이미지 영역 */
+      .works-content .mySwiper .imgBx {
+        width: 100%;
+        height: 280px;
+        overflow: hidden;
+      }
+
+      .works-content .mySwiper .imgBx img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      /* 슬라이드 내부 텍스트 영역 */
+      .works-content .mySwiper .detail {
+        width: 100%;
+        padding: 20px 14px;
+        box-sizing: border-box;
+        text-align: center;
+        flex-grow: 1;
+      }
+
+      .works-content .mySwiper .detail h3 {
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+
+      .works-content .mySwiper .detail h3 span {
+        font-size: 1rem;
+        opacity: 0.6;
+        font-weight: 400;
+        display: block;
+        margin-top: 8px;
+      }
+
+      /* 페이징(점) 위치 및 색상 */
+      .works-content .mySwiper .swiper-pagination {
+        position: static; /* 슬라이드 아래에 위치하도록 변경 */
+        margin-top: 20px;
+        display: block; /* 보이도록 설정 */
+      }
+
+      .works-content .mySwiper .swiper-pagination-bullet {
+        background: #000;
+        opacity: 0.4;
+      }
+
+      .works-content .mySwiper .swiper-pagination-bullet-active {
+        background: #000;
+        opacity: 1;
+      }
+      /* works-content를 flex 컨테이너로 만들어 내부 스크롤 영역이 꽉 차게 함 */
+      .works-content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding-top: 10vh; /* 제목과 상단 공간 확보 */
+        padding-bottom: 10vh;
+        box-sizing: border-box;
+      }
+
+      /* 스크롤 컨테이너 기본 스타일 */
+      .works-content .scroll-container {
+        width: 100%;
+        height: 100%; /* 부모 높이를 꽉 채움 */
+        overflow: hidden;
+      }
+
+      /* 스크롤 컨테이너 내부 슬라이드는 높이가 자동으로 조절되게 함 */
+      .works-content .scroll-container .swiper-slide {
+        height: auto;
+        background: none; /* 배경색 제거 */
+        justify-content: flex-start; /* 콘텐츠를 위에서부터 정렬 */
+      }
+
+      /* 세로 스크롤바 디자인 */
+      .works-content .scroll-container .swiper-scrollbar-drag {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+      }
+
+      /* h1 제목의 위치를 스크롤 컨테이너 내부 기준으로 조정 */
+      .works-content .scroll-container h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="swiper">
+      <div class="swiper-wrapper">
+        <!-- 🟧 인트로(구멍X) -->
+        <div class="swiper-slide intro">
+          <div class="film-bar top">
+            <!-- 네모를 JS로 18개 생성 (아래 script에서 자동 생성됨) -->
+          </div>
+          <div class="film-content">
+            <h1>SMPaK<br /><span>413</span></h1>
+            <div class="desc">35mm film for portfolio</div>
+            <div class="info">
+              Design | ©2025 SUNGMIN<br />ISO 0413 | exp. unlimited
+            </div>
+          </div>
+          <nav class="film-nav">
+            <ul>
+              <li>Home</li>
+              <li>About Me</li>
+              <li>Skills</li>
+              <li>Works</li>
+              <li>Contact</li>
+            </ul>
+          </nav>
+          <div class="film-bar bottom"></div>
+        </div>
+        <!-- ABOUT -->
+        <div class="swiper-slide">
+          <div class="film-bar top"></div>
+          <div class="film-content">
+            <h1>ABOUT<br /><span>ME</span></h1>
+            <div class="desc">
+              끊임없는 관찰과 구조화를 통해<br />브랜드와 사용자의 연결고리를
+              만드는 디자이너입니다.
+            </div>
+            <div class="info">UX/UI Design · Prototyping · Branding</div>
+          </div>
+          <div class="film-bar bottom"></div>
+        </div>
+        <!-- SKILLS -->
+        <div class="swiper-slide">
+          <div class="film-bar top"></div>
+          <div class="film-content">
+            <h1>SKILLS</h1>
+            <div class="desc">
+              <!-- UI/UX · Figma · Photoshop · HTML/CSS/JS · Git 등 -->
+            </div>
+          </div>
+          <div class="film-bar bottom"></div>
+        </div>
+        <!-- WORKS -->
+        <!-- WORKS -->
+        <div class="swiper-slide">
+          <div class="film-bar top"></div>
+          <div class="film-content works-content">
+            <h1>WORKS</h1>
+            <div class="mySwiper">
+              <div class="swiper-wrapper">
+                <!-- 슬라이드 1 -->
+                <div class="swiper-slide">
+                  <div class="imgBx">
+                    <img
+                      src="KakaoTalk_20250623_114222442.jpg"
+                      alt="포트폴리오1"
+                    />
+                  </div>
+                  <div class="detail">
+                    <h3>프로젝트 1<br /><span>Web Design</span></h3>
+                  </div>
+                </div>
+                <!-- 슬라이드 2 -->
+                <div class="swiper-slide">
+                  <div class="imgBx">
+                    <img
+                      src="KakaoTalk_20250623_114222442_01.jpg"
+                      alt="포트폴리오2"
+                    />
+                  </div>
+                  <div class="detail">
+                    <h3>프로젝트 2<br /><span>Branding</span></h3>
+                  </div>
+                </div>
+                <!-- 슬라이드 3 -->
+                <div class="swiper-slide">
+                  <div class="imgBx">
+                    <img
+                      src="KakaoTalk_20250623_114222442_02.jpg"
+                      alt="포트폴리오3"
+                    />
+                  </div>
+                  <div class="detail">
+                    <h3>프로젝트 3<br /><span>UX/UI App</span></h3>
+                  </div>
+                </div>
+                <!-- ... (슬라이드 계속 추가) ... -->
+                <div class="swiper-slide">
+                  <div class="imgBx">
+                    <img
+                      src="KakaoTalk_20250623_114222442_03.jpg"
+                      alt="포트폴리오4"
+                    />
+                  </div>
+                  <div class="detail">
+                    <h3>프로젝트 4<br /><span>Web Publishing</span></h3>
+                  </div>
+                </div>
+                <div class="swiper-slide">
+                  <div class="imgBx">
+                    <img src="6.jpg" alt="포트폴리오5" />
+                  </div>
+                  <div class="detail">
+                    <h3>프로젝트 5<br /><span>Web Design</span></h3>
+                  </div>
+                </div>
+                <div class="swiper-slide">
+                  <div class="imgBx">
+                    <img src="seoul2.jpg" alt="포트폴리오6" />
+                  </div>
+                  <div class="detail">
+                    <h3>프로젝트 6<br /><span>Web Design</span></h3>
+                  </div>
+                </div>
+                <div class="swiper-slide">
+                  <div class="imgBx">
+                    <img src="7.jpg" alt="포트폴리오7" />
+                  </div>
+                  <div class="detail">
+                    <h3>프로젝트 7<br /><span>Web Design</span></h3>
+                  </div>
+                </div>
+                <div class="swiper-slide">
+                  <div class="imgBx">
+                    <img src="9.jpg" alt="포트폴리오8" />
+                  </div>
+                  <div class="detail">
+                    <h3>프로젝트 8<br /><span>Web Design</span></h3>
+                  </div>
+                </div>
+                <div class="swiper-slide">
+                  <div class="imgBx">
+                    <img src="seoul5.jpg" alt="포트폴리오9" />
+                  </div>
+                  <div class="detail">
+                    <h3>프로젝트 9<br /><span>Web Design</span></h3>
+                  </div>
+                </div>
+                <div class="swiper-slide">
+                  <div class="imgBx">
+                    <img src="8.jpg" alt="포트폴리오10" />
+                  </div>
+                  <div class="detail">
+                    <h3>프로젝트 10<br /><span>Web Design</span></h3>
+                  </div>
+                </div>
+              </div>
+              <div class="swiper-pagination"></div>
+            </div>
+          </div>
+          <div class="film-bar bottom"></div>
+        </div>
+
+        <!-- CONTACT -->
+        <div class="swiper-slide">
+          <div class="film-bar top"></div>
+          <div class="film-content">
+            <h1>CONTACT</h1>
+            <div class="desc">
+              이메일: sungmin@example.com<br />포트폴리오 문의 환영!
+            </div>
+          </div>
+          <div class="film-bar bottom"></div>
+        </div>
       </div>
-
-      <!-- 내비게이션 -->
-      <nav class="intro-nav">
-        <ul>
-          <li>Home</li>
-          <li>About Me</li>
-          <li>Skills</li>
-          <li>Works</li>
-          <li>Contact</li>
-        </ul>
-      </nav>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // 필름 구멍 생성
+        function addFilmHoles() {
+          document.querySelectorAll(".film-bar").forEach((bar) => {
+            bar.innerHTML = "";
+            const barWidth = bar.offsetWidth || window.innerWidth;
+            const sidePad = 32;
+            const holeSize = 28;
+            const gap = 24;
+            const usable = barWidth - sidePad * 2;
+            const holePlusGap = holeSize + gap;
+            let count = Math.floor((usable + gap) / holePlusGap);
+            if (count < 1) count = 1;
+            const leftGap =
+              (usable - (count * holeSize + (count - 1) * gap)) / 2;
+            bar.style.paddingLeft = sidePad + leftGap + "px";
+            bar.style.paddingRight = sidePad + leftGap + "px";
+            for (let i = 0; i < count; i++) {
+              const hole = document.createElement("div");
+              hole.className = "film-hole";
+              bar.appendChild(hole);
+            }
+          });
+        }
+        addFilmHoles();
+        window.addEventListener("resize", addFilmHoles);
 
-    <!-- 우측 필름 기둥 -->
-    <div class="film-side"></div>
-  </section>
+        // 메인 Swiper(전체 페이지용)
+        var swiper = new Swiper(".swiper", {
+          direction: "horizontal",
+          slidesPerView: 1,
+          spaceBetween: 0,
+          speed: 900,
+          grabCursor: true,
+          mousewheel: {
+            sensitivity: 2.0,
+            releaseOnEdges: true,
+          },
+          nested: true,
+        });
 
-<!-- Home Section -->
-<section class="home-section">
-  <!-- 왼쪽 필름 -->
-  <div class="film-side left">
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-  </div>
+        // 네비게이션 클릭 이동
+        document.querySelectorAll(".film-nav li").forEach((navItem, idx) => {
+          navItem.addEventListener("click", () => {
+            swiper.slideTo(idx, 800);
+          });
+        });
 
-  <!-- 가운데 콘텐츠 -->
-  <div class="home-center">
-    <div class="home-content">
-      <p class="home-quote">“ 순간의 감정을, 한 장의 필름처럼 디자인하다.”</p>
-      <div class="home-tags">
-        <span># Moment</span>
-        <span># Feelings</span>
-        <span># Film</span>
-      </div>
-    </div>
-  </div>
+        // WORKS 영역 Coverflow Swiper (내부)
+        var worksSwiper = new Swiper(".mySwiper", {
+          effect: "coverflow",
+          grabCursor: true,
+          centeredSlides: true,
+          slidesPerView: "auto",
+          loop: true,
+          spaceBetween: 40,
+          coverflowEffect: {
+            rotate: 36,
+            stretch: 0,
+            depth: 220,
+            modifier: 1.08,
+            slideShadows: true,
+          },
+          autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+          },
+          pagination: {
+            el: ".works-content .mySwiper .swiper-pagination",
+            clickable: true,
+          },
+          mousewheel: {
+            forceToAxis: true,
+            sensitivity: 1,
+          },
+          nested: true,
+        });
 
-  <!-- 오른쪽 필름 -->
-  <div class="film-side right">
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-  </div>
-</section>
+        // ⭐️ 핵심: works 영역에서만 전체 swiper 비활성화 & 휠→슬라이드 & autoplay 컨트롤
+        const worksSliderElement = document.querySelector(
+          ".works-content .mySwiper"
+        );
 
-<div class="divider"></div>
+        worksSliderElement.addEventListener("mouseenter", () => {
+          swiper.mousewheel.disable(); // 전체 swiper 휠 잠금
+          swiper.allowTouchMove = false; // 전체 swiper 드래그/터치도 잠금
+        });
+        worksSliderElement.addEventListener("mouseleave", () => {
+          swiper.mousewheel.enable(); // 다시 전체 swiper 활성화
+          swiper.allowTouchMove = true;
+          worksSwiper.autoplay.start(); // 영역 벗어나면 자동 슬라이드 재시작
+        });
 
-<!-- ABOUT ME Section -->
-   <!-- 왼쪽 필름 -->
-  <div class="film-side left">
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-  </div>
-<section class="about-section">
-  <div class="film-side left"></div>
-  <div class="section-center">
-    <div class="section-content">
-      <p>ABOUT ME</p>
-    </div>
-  </div>
-  <div class="film-side right"></div>
-  
-</section>
-
-
-<div class="divider"></div>
-
-<!-- SKILLS Section -->
-<section class="skills-section">
-  <div class="film-side left"></div>
-  <div class="section-center">
-    <div class="section-content">
-      <p>SKILLS</p>
-    </div>
-  </div>
-  <div class="film-side right"></div>
-</section>
-
-<div class="divider"></div>
-
-<!-- WORKS Section -->
-<section class="works-section">
-  <div class="film-side left"></div>
-  <div class="section-center">
-    <div class="section-content">
-      <p>WORKS</p>
-    </div>
-  </div>
-  <div class="film-side right"></div>
-</section>
-
-<div class="divider"></div>
-
-<!-- CONTACT Section -->
-<section class="contact-section">
-  <div class="film-side left"></div>
-  <div class="section-center">
-    <div class="section-content">
-      <p>CONTACT</p>
-    </div>
-  </div>
-  <div class="film-side right"></div>
-</section>
-
-<div class="divider"></div>
-
-
-
-
-</body>
+        // 세로 휠→슬라이드 & 휠 시 autoplay 잠시 멈춤
+        let wheelTimeout;
+        worksSliderElement.addEventListener(
+          "wheel",
+          function (e) {
+            if (e.deltaY === 0) return; // 세로 휠 아닐 땐 무시
+            e.preventDefault();
+            worksSwiper.autoplay.stop(); // 휠로 넘기면 자동 슬라이드 멈춤
+            if (e.deltaY > 0) worksSwiper.slideNext();
+            else worksSwiper.slidePrev();
+            clearTimeout(wheelTimeout);
+            wheelTimeout = setTimeout(() => {
+              worksSwiper.autoplay.start();
+            }, 2200); // 2.2초 후 자동 슬라이드 재시작
+          },
+          { passive: false }
+        );
+      });
+    </script>
+  </body>
 </html>

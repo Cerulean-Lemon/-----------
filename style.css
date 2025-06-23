@@ -5,8 +5,20 @@
   box-sizing: border-box;
 }
 body {
-  background: #eaeaea;
+   perspective: 1200px;
+    overflow-x: hidden;
   font-family: 'Pretendard', sans-serif;
+}
+
+.film-roll {
+  transition: transform 0.5s cubic-bezier(.22,1.2,.58,1);
+  will-change: transform;
+}
+
+section {
+  width: 100vw;
+  min-height: 60vh;
+  background: #fff;
 }
 
 /* 상단 검정 바 */
@@ -99,17 +111,12 @@ body {
 .contact-section {
   display: flex;
   width: 100vw;
+  height: 150vh;
   position: relative;
   background: #fff;
 }
 
-.home-section,
-.about-section,
-.skills-section,
-.works-section,
-.contact-section {
-  height: 1045px;
-}
+
 
 /* 중앙 콘텐츠 공통 */
 .home-center,
